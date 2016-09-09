@@ -1,9 +1,6 @@
 import java.text.DecimalFormat;
 import java.io.Console;
 import java.util.Arrays;
-import java.io.IOException;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 
 public class App {
   private static Event event;
@@ -34,56 +31,13 @@ public class App {
   }
 
   private static Integer getAttendees() {
-    Console console = System.console();
-    setScreen();
-    System.out.println("We'll need to collect a bit of information about your upcoming event.");
-
-    System.out.println("How many people will be attending your upcoming event?");
-    System.out.println();
-    System.out.print(ConsoleUtils.bold("People: "));
-    Integer people = Integer.parseInt(console.readLine());
-    System.out.println("Thanks!");
-    System.out.println();
-    ConsoleUtils.pauseScreen();
-    return (people);
+    String msg = String.format("We'll need to collect a bit of information about your upcoming event.\n" +
+    "How many people will be attending your upcoming event?\n");
+    String prompt = "People: ";
+    String errorMsg = "Please enter a number.";
+    Integer[] validChoices = {};
+    return getChoice(msg, prompt, errorMsg, validChoices);
   }
-
-  // private static Integer getMealChoice() {
-  //   Console console = System.console();
-  //   String choice = "";
-  //   boolean choiceIsValid = false;
-  //   int timesRun = 0;
-  //   while (!choiceIsValid) {
-  //     setScreen();
-  //     System.out.println("What type of meal will we serve?");
-  //     System.out.println("The options are:");
-  //     System.out.println();
-  //     String header = "ID Name           Cost/Person";
-  //     System.out.println(ConsoleUtils.center(ConsoleUtils.underline(header), header.length()));
-  //     for (int i = 0; i < Meal.getAllMealNames().length; i++){
-  //       String spacer = "";
-  //       int spacesNeeded = 24 - (Meal.getAllMealNames()[i].length() + Meal.getAllMealCosts()[i].toString().length());
-  //       for (int j = 0; j < spacesNeeded; j++) {
-  //         spacer += " ";
-  //       }
-  //       System.out.println(ConsoleUtils.center(String.format("%d: %s%s$%.2f", i, Meal.getAllMealNames()[i], spacer, Meal.getAllMealCosts()[i])));
-  //     }
-  //     System.out.println();
-  //     System.out.println();
-  //     if (!choiceIsValid && timesRun > 0) {
-  //       System.out.println("Sorry, I don't recognize that ID.");
-  //     }
-  //     System.out.print(ConsoleUtils.bold("ID: "));
-  //     choice = console.readLine();
-  //     timesRun++;
-  //     choiceIsValid = (choice.equals("0") || choice.equals("1"));
-  //   }
-  //   Integer meal = Integer.parseInt(choice);
-  //   System.out.println("Thanks!");
-  //   System.out.println();
-  //   ConsoleUtils.pauseScreen();
-  //   return meal;
-  // }
 
   private static Integer getMealChoice() {
     String msg = String.format("What type of meal will we serve?\n" +
@@ -100,12 +54,12 @@ public class App {
     }
     String errorMsg = "Sorry, I don't recognize that ID.";
     String prompt = "ID: ";
-    Integer[] valids = { 0, 1, 2, 3, 4, 5 };
-    Integer choice = getChoice(msg, prompt, errorMsg, valids);
+    Integer[] validChoices = { 0, 1, 2, 3, 4, 5 };
+    Integer choice = getChoice(msg, prompt, errorMsg, validChoices);
     return choice;
   }
 
-  private static Integer getChoice(String msg, String prompt, String errorMsg, Integer[] valids) {
+  private static Integer getChoice(String msg, String prompt, String errorMsg, Integer[] validChoices) {
     Console console = System.console();
     String choice = "";
     Integer output = null;
@@ -127,11 +81,14 @@ public class App {
         choiceIsValid = false;
       } finally {
         if (output != null) {
-          choiceIsValid = (Arrays.asList(valids).contains(output));
+          if (validChoices.length > 0) {
+            choiceIsValid = (Arrays.asList(validChoices).contains(output));
+          } else {
+            choiceIsValid = true;
+          }
         }
       }
     }
-    System.out.println();
     System.out.println("Thanks!");
     System.out.println();
     ConsoleUtils.pauseScreen();
