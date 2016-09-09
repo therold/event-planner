@@ -1,10 +1,13 @@
+import java.util.Arrays;
+import java.util.ArrayList;
+
 public class Event {
   private Integer mAttendees;
-  private Meal mMeal;
+  private ArrayList<Meal> mMeals;
 
   public Event() {
     mAttendees = 0;
-    mMeal = new Meal();
+    mMeals = new ArrayList<Meal>();
   }
 
   public Integer getNumberOfAttendees() {
@@ -15,23 +18,40 @@ public class Event {
     mAttendees = attendees;
   }
 
-  public void setMealId(Integer id) {
-    mMeal.setMealId(id);
+  public ArrayList<String> getMealNames() {
+    ArrayList<String> names = new ArrayList<String>();
+    for (Meal meal : mMeals) {
+      names.add(meal.getMealName());
+    }
+    return names;
+  }
+  public void addMealById(Integer id) {
+    Meal meal = new Meal();
+    meal.setMealId(id);
+    mMeals.add(meal);
   }
 
-  public void setMealByName(String name) {
-    mMeal.setMealByName(name);
+  public void addMealByName(String name) {
+    Meal meal = new Meal();
+    meal.setMealByName(name);
+    mMeals.add(meal);
   }
 
   public Double getTotalEventCost() {
     Double baseCost = mAttendees * 5.00;
-    Double mealCost = mAttendees * getMealCostPerPerson();
+    Double mealCost = 0.00;
+    for (int i = 0; i < mMeals.size(); i++) {
+      mealCost += mAttendees * mMeals.get(i).getMealCost();
+    }
     return baseCost + mealCost;
   }
 
-  public Double getMealCostPerPerson() {
-    return mMeal.getMealCost();
+  public ArrayList<Double> getMealCosts() {
+    ArrayList<Double> mealCosts = new ArrayList<Double>();
+    for (Meal meal : mMeals) {
+      mealCosts.add(meal.getMealCost());
+    }
+    return mealCosts;
   }
-
 
 }

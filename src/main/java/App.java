@@ -14,7 +14,7 @@ public class App {
     while (running) {
       String testing = Arrays.toString(Meal.getAllMealNames());
       event.setNumberOfAttendees(getAttendees());
-      event.setMealId(getMealChoice());
+      event.addMealById(getMealChoice());
       String keepRunning = getRunAgain();
       if (keepRunning.equals("N") || keepRunning.equals("n")) {
         running = false;
@@ -27,16 +27,23 @@ public class App {
   private static String getRunAgain() {
     String totalCost = moneyFormat.format(event.getTotalEventCost());
     String baseCostPerPerson = moneyFormat.format(5.00);
-    String mealCostPerPerson = moneyFormat.format(event.getMealCostPerPerson());
-    String subtotalPerPerson = moneyFormat.format(5.00 + event.getMealCostPerPerson());
     String msg = String.format("The total cost for your event is: " + ConsoleUtils.bold("%s\n"), totalCost);
     msg += "See below for more information.\n\n";
 
     int tableWidth = 35;
     msg += ConsoleUtils.makeTableHeader("Item", "Cost", tableWidth);
-    msg += ConsoleUtils.makeTableLine("Base cost per person:", baseCostPerPerson, tableWidth);
-    msg += ConsoleUtils.makeTableSubtotalLine("Meal cost per person:", mealCostPerPerson, tableWidth);
-    msg += ConsoleUtils.makeTableLine("Subtotal per person:", subtotalPerPerson, tableWidth);
+    msg += ConsoleUtils.makeTableLine("Entry fee:", baseCostPerPerson, tableWidth);
+    for (int i = 0; i < event.getMealNames().size(); i++) {
+      String mealName = event.getMealNames().get(i);
+      String mealCost = moneyFormat.format(event.getMealCosts().get(i));
+      msg += ConsoleUtils.makeTableSubtotalLine(mealName + ":", mealCost, tableWidth);
+    }
+    Double mealSubtotal = 0.00;
+    for (int i = 0; i < event.getMealCosts().size(); i++) {
+      mealSubtotal += event.getMealCosts().get(i);
+    }
+    String subtotalPerPerson = moneyFormat.format(5.00 + mealSubtotal);
+    msg += ConsoleUtils.makeTableLine("Subtotal (per attendee):", subtotalPerPerson, tableWidth);
     msg += ConsoleUtils.makeTableSubtotalLine("People attending: ", "x" + event.getNumberOfAttendees(), tableWidth);
     msg += ConsoleUtils.makeTableLine("Grand total:", totalCost, tableWidth);
     msg += "\n";

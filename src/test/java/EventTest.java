@@ -24,11 +24,11 @@ public class EventTest {
   }
 
   @Test
-  public void getMealCostPerPerson_returnsMealCostPerPerson_000() {
+  public void getMealCostsPerPerson_returnsMealsCostPerPerson_000() {
     Event testEvent = new Event();
-    testEvent.setMealId(0);
+    testEvent.addMealById(0);
     Double expected = 0.00;
-    assertEquals(expected, testEvent.getMealCostPerPerson());
+    assertEquals(expected, testEvent.getMealCosts().get(0));
   }
 
   @Test
