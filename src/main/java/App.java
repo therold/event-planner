@@ -4,10 +4,12 @@ import java.util.Arrays;
 
 public class App {
   private static Event event;
+  private static DecimalFormat moneyFormat;
 
   public static void main(String[] args) {
     Console console = System.console();
     event = new Event();
+    moneyFormat  = new DecimalFormat("$#,##0.00");
     boolean running = true;
     while (running) {
       String testing = Arrays.toString(Meal.getAllMealNames());
@@ -23,17 +25,22 @@ public class App {
   }
 
   private static String getRunAgain() {
-    DecimalFormat formatter = new DecimalFormat("#,###.00");
-    int tableWidth = 35;
-    String totalCost = formatter.format(event.getTotalEventCost());
-    String baseCostPerPerson = formatter.format(5.00);
-    String mealCostPerPerson = formatter.format(event.getMealCostPerPerson());
-    String msg = String.format("The total cost for your event is: " + ConsoleUtils.bold("$%s\n"), totalCost);
+    String totalCost = moneyFormat.format(event.getTotalEventCost());
+    String baseCostPerPerson = moneyFormat.format(5.00);
+    String mealCostPerPerson = moneyFormat.format(event.getMealCostPerPerson());
+    String subtotalPerPerson = moneyFormat.format(5.00 + event.getMealCostPerPerson());
+    String msg = String.format("The total cost for your event is: " + ConsoleUtils.bold("%s\n"), totalCost);
     msg += "See below for more information.\n\n";
-    msg += ConsoleUtils.underline(ConsoleUtils.makeTableLine("Item", "Cost", tableWidth));
-    msg += ConsoleUtils.makeTableLine("Base cost per person:", "$" + baseCostPerPerson, tableWidth);
-    msg += ConsoleUtils.makeTableLine("Meal cost per person:", "$" + mealCostPerPerson, tableWidth);
+
+    int tableWidth = 35;
+    msg += ConsoleUtils.makeTableHeader("Item", "Cost", tableWidth);
+    msg += ConsoleUtils.makeTableLine("Base cost per person:", baseCostPerPerson, tableWidth);
+    msg += ConsoleUtils.makeTableSubtotalLine("Meal cost per person:", mealCostPerPerson, tableWidth);
+    msg += ConsoleUtils.makeTableLine("Subtotal per person:", subtotalPerPerson, tableWidth);
+    msg += ConsoleUtils.makeTableSubtotalLine("People attending: ", "x" + event.getNumberOfAttendees(), tableWidth);
+    msg += ConsoleUtils.makeTableLine("Grand total:", totalCost, tableWidth);
     msg += "\n";
+
     msg += "Would you like to plan another event?\n";
     String prompt = "[Y/n] ";
     String errorMsg = "Please enter Y or N.";
@@ -58,16 +65,15 @@ public class App {
   private static Integer getMealChoice() {
     String msg = String.format("What type of meal will we serve?\n" +
       "The options are:\n\n");
-    String header = "ID Name           Cost/Person\n";
-    msg += String.format(ConsoleUtils.center(ConsoleUtils.underline(header), header.length()));
+
+    Integer tableWidth = 35;
+    msg += ConsoleUtils.makeTableHeader("ID Name", "Cost/Person", tableWidth);
     for (int i = 0; i < Meal.getAllMealNames().length; i++){
-      String spacer = "";
-      int spacesNeeded = 24 - (Meal.getAllMealNames()[i].length() + Meal.getAllMealCosts()[i].toString().length());
-      for (int j = 0; j < spacesNeeded; j++) {
-        spacer += " ";
-      }
-      msg += (ConsoleUtils.center(String.format("%d: %s%s$%.2f\n", i, Meal.getAllMealNames()[i], spacer, Meal.getAllMealCosts()[i])));
+      String mealName = String.format("%d: %s", i, Meal.getAllMealNames()[i]);
+      String mealCost = moneyFormat.format(Meal.getAllMealCosts()[i]);
+      msg += ConsoleUtils.makeTableLine(mealName, mealCost, tableWidth);
     }
+
     String errorMsg = "Sorry, I don't recognize that ID.";
     String prompt = "ID";
     Integer[] validChoices = { 0, 1, 2, 3, 4, 5 };
@@ -135,8 +141,7 @@ public class App {
     ConsoleUtils.clearConsole();
     Integer people = event.getNumberOfAttendees();
     Double cost = event.getTotalEventCost();
-    DecimalFormat formatter = new DecimalFormat("#,###.00");
-    ConsoleUtils.setFooter(String.format("People: %d", people), String.format("Current Cost: $%s", formatter.format(cost)));
+    ConsoleUtils.setFooter(String.format("People: %d", people), String.format("Current Cost: %s", moneyFormat.format(cost)));
     ConsoleUtils.setTitle("Welcome to Epicodus Event Planners!");
   }
 }
