@@ -145,14 +145,29 @@ public class ConsoleUtils {
   }
 
   public static String makeTableLine(String leftText, String rightText, Integer tableWidth) {
+    String output = makeTableLineRaw(leftText, rightText, tableWidth);
+    return ConsoleUtils.center(output);
+  }
+
+  public static String makeTableHeader(String leftText, String rightText, Integer tableWidth) {
+    String output = makeTableLineRaw(leftText, rightText, tableWidth);
+    return ConsoleUtils.center(ConsoleUtils.bold(ConsoleUtils.underline(output)), output.length());
+  }
+
+  public static String makeTableSubtotalLine(String leftText, String rightText, Integer tableWidth) {
+    String output = makeTableLineRaw(leftText, rightText, tableWidth);
+    return ConsoleUtils.center(ConsoleUtils.underline(output), output.length());
+  }
+
+  private static String makeTableLineRaw(String leftText, String rightText, Integer tableWidth) {
     String output = "";
     output += leftText;
     for (int i = 0; i < tableWidth - (leftText.length() + rightText.length()); i++) {
       output += " ";
     }
     output += String.format("%s\n", rightText);
+    output = output;
     return output;
   }
-
 
 }
