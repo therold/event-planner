@@ -33,12 +33,21 @@ public class App {
 
   private static String getRunAgain() {
     String totalCost = moneyFormat.format(event.getTotalEventCost());
-    String baseCostPerPerson = moneyFormat.format(5.00);
     String msg = String.format("The total cost for your event is: " + ConsoleUtils.bold("%s\n"), totalCost);
     msg += "See below for more information.\n\n";
+    msg += makeReceiptTable();
+    msg += "Would you like to plan another event?\n";
+    String prompt = "[Y/n] ";
+    String errorMsg = "Please enter Y or N.";
+    String[] validChoices = { "Y", "y", "N", "n", "" };
+    return getChoice(msg, prompt, errorMsg, validChoices);
+  }
 
+  private static String makeReceiptTable() {
+    String msg = "";
     int tableWidth = 35;
     msg += ConsoleUtils.makeTableHeader("Item", "Cost", tableWidth);
+    String baseCostPerPerson = moneyFormat.format(5.00);
     msg += ConsoleUtils.makeTableLine("Entry fee:", baseCostPerPerson, tableWidth);
     for (int i = 0; i < event.getMealNames().size() - 1 ; i++) {
       String mealName = event.getMealNames().get(i);
@@ -55,21 +64,17 @@ public class App {
     String subtotalPerPerson = moneyFormat.format(5.00 + mealSubtotal);
     msg += ConsoleUtils.makeTableLine("Subtotal (per attendee):", subtotalPerPerson, tableWidth);
     msg += ConsoleUtils.makeTableSubtotalLine("People attending: ", "x" + event.getNumberOfAttendees(), tableWidth);
+    String totalCost = moneyFormat.format(event.getTotalEventCost());
     msg += ConsoleUtils.makeTableLine("Grand total:", totalCost, tableWidth);
     msg += "\n";
-
-    msg += "Would you like to plan another event?\n";
-    String prompt = "[Y/n] ";
-    String errorMsg = "Please enter Y or N.";
-    String[] validChoices = { "Y", "y", "N", "n" };
-    return getChoice(msg, prompt, errorMsg, validChoices);
+    return msg;
   }
 
   private static String getHaveEnoughMeals() {
     String msg = String.format("Would you like to add another meal?\n");
-    String prompt = "[Y/N]";
+    String prompt = "[Y/n]";
     String errorMsg = "Please enter Y or N.";
-    String[] validChoices = { "Y", "y", "N", "n" };
+    String[] validChoices = { "Y", "y", "N", "n", "" };
     String choice = getChoice(msg, prompt, errorMsg, validChoices);
     return choice;
   }
@@ -78,7 +83,7 @@ public class App {
     String msg = String.format("We'll need to collect a bit of information about your upcoming event.\n" +
     "How many people will be attending your upcoming event?\n");
     String prompt = "People";
-    String errorMsg = "Please enter a number.";
+    String errorMsg = "Please enter the number of people.";
     Integer[] validChoices = {};
     Integer choice = getChoice(msg, prompt, errorMsg, validChoices);
     return choice;
@@ -87,7 +92,16 @@ public class App {
   private static Integer getMealChoice() {
     String msg = String.format("What type of meal will we serve?\n" +
       "The options are:\n\n");
+    msg += makeAllMealsTable();
+    String errorMsg = "Sorry, I don't recognize that ID.";
+    String prompt = "ID";
+    Integer[] validChoices = { 0, 1, 2, 3, 4, 5 };
+    Integer choice = getChoice(msg, prompt, errorMsg, validChoices);
+    return choice;
+  }
 
+  private static String makeAllMealsTable() {
+    String msg = "";
     Integer tableWidth = 35;
     msg += ConsoleUtils.makeTableHeader("ID Name", "Cost/Person", tableWidth);
     for (int i = 0; i < Meal.getAllMealNames().length; i++){
@@ -95,12 +109,7 @@ public class App {
       String mealCost = moneyFormat.format(Meal.getAllMealCosts()[i]);
       msg += ConsoleUtils.makeTableLine(mealName, mealCost, tableWidth);
     }
-
-    String errorMsg = "Sorry, I don't recognize that ID.";
-    String prompt = "ID";
-    Integer[] validChoices = { 0, 1, 2, 3, 4, 5 };
-    Integer choice = getChoice(msg, prompt, errorMsg, validChoices);
-    return choice;
+    return msg;
   }
 
   private static Integer getChoice(String msg, String prompt, String errorMsg, Integer[] validChoices) {
@@ -128,7 +137,7 @@ public class App {
           if (validChoices.length > 0) {
             choiceIsValid = (Arrays.asList(validChoices).contains(output));
           } else {
-            choiceIsValid = true;
+            choiceIsValid = (output > 0);
           }
         }
       }
