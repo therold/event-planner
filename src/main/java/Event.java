@@ -19,6 +19,10 @@ public class Event {
     mMeal.setMealId(id);
   }
 
+  public void setMealByName(String name) {
+    mMeal.setMealByName(name);
+  }
+
   public Double getTotalEventCost() {
     Double baseCost = mAttendees * 5.00;
     Double mealCost = mAttendees * getMealCostPerPerson();
