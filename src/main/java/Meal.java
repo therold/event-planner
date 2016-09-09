@@ -1,9 +1,9 @@
 import java.util.Arrays;
 
 public class Meal {
+  private static String[] mMealNames = { "No Meal", "Breakfast", "Lunch", "Light Snack", "Light Dinner", "Full Dinner" };
+  private static Double[] mMealCosts = { 0.00, 10.00, 12.00, 4.00, 8.00, 15.00 };
   private Integer mId;
-  private String[] mMealNames = { "No Meal", "Breakfast", "Lunch", "Light Snack", "Light Dinner", "Full Dinner" };
-  private Double[] mMealCosts = { 0.00, 10.00, 12.00, 4.00, 8.00, 15.00 };
 
   public Meal() {
     mId = 0;
@@ -19,7 +19,7 @@ public class Meal {
 
   public void setMealByName(String name) {
     if (Arrays.asList(mMealNames).indexOf(name) >= 0) {
-      Integer id = Arrays.asList(mMealNames).indexOf(name);
+      mId = Arrays.asList(mMealNames).indexOf(name);
     }
   }
 
@@ -31,11 +31,11 @@ public class Meal {
     return mMealCosts[mId];
   }
 
-  public String[] getAllMealNames() {
+  public static String[] getAllMealNames() {
     return mMealNames;
   }
 
-  public Double[] getAllMealCosts() {
+  public static Double[] getAllMealCosts() {
     return mMealCosts;
   }
 
