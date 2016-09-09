@@ -35,8 +35,21 @@ public class ConsoleUtils {
   }
 
   public static void center(String msg) {
-    int consoleWidth = 80;
+    int consoleWidth = getConsoleWidth();
     int msgWidth = msg.length();
+    int start = (int)Math.floor((consoleWidth / 2) - (msgWidth / 2));
+    for (int i = 0; i < start; i++) {
+      System.out.print(" ");
+    }
+    System.out.print(msg);
+    for (int i = start + msgWidth; i < consoleWidth; i++) {
+      System.out.print(" ");
+    }
+  }
+
+  public static void center(String msg, Integer length) {
+    int consoleWidth = getConsoleWidth();
+    int msgWidth = length;
     int start = (int)Math.floor((consoleWidth / 2) - (msgWidth / 2));
     for (int i = 0; i < start; i++) {
       System.out.print(" ");
