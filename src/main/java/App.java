@@ -13,16 +13,8 @@ public class App {
       String testing = Arrays.toString(Meal.getAllMealNames());
       event.setNumberOfAttendees(getAttendees());
       event.setMealId(getMealChoice());
-
-      ConsoleUtils.clearConsole();
-      setScreen();
-      DecimalFormat formatter = new DecimalFormat("#,###.00");
-      System.out.println(String.format("The total cost for your event is: " + ConsoleUtils.bold("$%s"), formatter.format(event.getTotalEventCost())));
-      System.out.println("Would you like to plan another event?");
-      System.out.println();
-      System.out.print(ConsoleUtils.bold("[Y/n] "));
-      String choice = console.readLine();
-      if (choice.equals("N") || choice.equals("n")) {
+      String keepRunning = getRunAgain();
+      if (keepRunning.equals("N") || keepRunning.equals("n")) {
         running = false;
       } else {
         event = new Event();
@@ -30,13 +22,28 @@ public class App {
     }
   }
 
+  private static String getRunAgain() {
+    DecimalFormat formatter = new DecimalFormat("#,###.00");
+    String msg = String.format("The total cost for your event is: " + ConsoleUtils.bold("$%s\n"), formatter.format(event.getTotalEventCost()));
+    msg += "Would you like to plan another event?\n";
+    String prompt = "[Y/n] ";
+    String errorMsg = "Please enter Y or N.";
+    String[] validChoices = { "Y", "y", "N", "n" };
+    return getChoice(msg, prompt, errorMsg, validChoices);
+  }
+
+
   private static Integer getAttendees() {
     String msg = String.format("We'll need to collect a bit of information about your upcoming event.\n" +
     "How many people will be attending your upcoming event?\n");
-    String prompt = "People: ";
+    String prompt = "People";
     String errorMsg = "Please enter a number.";
     Integer[] validChoices = {};
-    return getChoice(msg, prompt, errorMsg, validChoices);
+    Integer choice = getChoice(msg, prompt, errorMsg, validChoices);
+    System.out.println("Thanks!");
+    System.out.println();
+    ConsoleUtils.pauseScreen();
+    return choice;
   }
 
   private static Integer getMealChoice() {
@@ -53,9 +60,12 @@ public class App {
       msg += (ConsoleUtils.center(String.format("%d: %s%s$%.2f\n", i, Meal.getAllMealNames()[i], spacer, Meal.getAllMealCosts()[i])));
     }
     String errorMsg = "Sorry, I don't recognize that ID.";
-    String prompt = "ID: ";
+    String prompt = "ID";
     Integer[] validChoices = { 0, 1, 2, 3, 4, 5 };
     Integer choice = getChoice(msg, prompt, errorMsg, validChoices);
+    System.out.println("Thanks!");
+    System.out.println();
+    ConsoleUtils.pauseScreen();
     return choice;
   }
 
@@ -89,11 +99,30 @@ public class App {
         }
       }
     }
-    System.out.println("Thanks!");
-    System.out.println();
-    ConsoleUtils.pauseScreen();
     return output;
   }
+
+  private static String getChoice(String msg, String prompt, String errorMsg, String[] validChoices) {
+    Console console = System.console();
+    int timesRun = 0;
+    String output = null;
+    boolean choiceIsValid = false;
+    while (!choiceIsValid) {
+      setScreen();
+      System.out.println(msg);
+      System.out.println();
+      if (!choiceIsValid && timesRun > 0) {
+        System.out.println(errorMsg);
+      }
+      System.out.print(ConsoleUtils.bold(String.format("%s: ", prompt)));
+      output = console.readLine();
+      choiceIsValid = (Arrays.asList(validChoices).contains(output));
+      timesRun++;
+    }
+    return output;
+  }
+
+
 
   private static void setScreen() {
     ConsoleUtils.clearConsole();
