@@ -3,10 +3,10 @@ apply plugin: 'application'
 
 archivesBaseName = "event-planner"
 version = '1.0'
-mainClassName = "App"
+mainClassName = "Event"
 
 repositories {
- mavenCentral()
+  mavenCentral()
 }
 
 dependencies {
