@@ -14,7 +14,14 @@ public class App {
     while (running) {
       String testing = Arrays.toString(Meal.getAllMealNames());
       event.setNumberOfAttendees(getAttendees());
-      event.addMealById(getMealChoice());
+      boolean mealChoiceRunning = true;
+      while (mealChoiceRunning) {
+        event.addMealById(getMealChoice());
+        String keepAddingMeals = getHaveEnoughMeals();
+        if (keepAddingMeals.equals("N") || keepAddingMeals.equals("n")) {
+          mealChoiceRunning = false;
+        }
+      }
       String keepRunning = getRunAgain();
       if (keepRunning.equals("N") || keepRunning.equals("n")) {
         running = false;
@@ -33,11 +40,14 @@ public class App {
     int tableWidth = 35;
     msg += ConsoleUtils.makeTableHeader("Item", "Cost", tableWidth);
     msg += ConsoleUtils.makeTableLine("Entry fee:", baseCostPerPerson, tableWidth);
-    for (int i = 0; i < event.getMealNames().size(); i++) {
+    for (int i = 0; i < event.getMealNames().size() - 1 ; i++) {
       String mealName = event.getMealNames().get(i);
       String mealCost = moneyFormat.format(event.getMealCosts().get(i));
-      msg += ConsoleUtils.makeTableSubtotalLine(mealName + ":", mealCost, tableWidth);
+      msg += ConsoleUtils.makeTableLine(mealName + ":", mealCost, tableWidth);
     }
+    String mealName = event.getMealNames().get(event.getMealNames().size() - 1);
+    String mealCost = moneyFormat.format(event.getMealCosts().get(event.getMealNames().size() - 1));
+    msg += ConsoleUtils.makeTableSubtotalLine(mealName + ":", mealCost, tableWidth);
     Double mealSubtotal = 0.00;
     for (int i = 0; i < event.getMealCosts().size(); i++) {
       mealSubtotal += event.getMealCosts().get(i);
@@ -55,6 +65,14 @@ public class App {
     return getChoice(msg, prompt, errorMsg, validChoices);
   }
 
+  private static String getHaveEnoughMeals() {
+    String msg = String.format("Would you like to add another meal?\n");
+    String prompt = "[Y/N]";
+    String errorMsg = "Please enter Y or N.";
+    String[] validChoices = { "Y", "y", "N", "n" };
+    String choice = getChoice(msg, prompt, errorMsg, validChoices);
+    return choice;
+  }
 
   private static Integer getAttendees() {
     String msg = String.format("We'll need to collect a bit of information about your upcoming event.\n" +
@@ -63,9 +81,6 @@ public class App {
     String errorMsg = "Please enter a number.";
     Integer[] validChoices = {};
     Integer choice = getChoice(msg, prompt, errorMsg, validChoices);
-    System.out.println("Thanks!");
-    System.out.println();
-    ConsoleUtils.pauseScreen();
     return choice;
   }
 
@@ -85,9 +100,6 @@ public class App {
     String prompt = "ID";
     Integer[] validChoices = { 0, 1, 2, 3, 4, 5 };
     Integer choice = getChoice(msg, prompt, errorMsg, validChoices);
-    System.out.println("Thanks!");
-    System.out.println();
-    ConsoleUtils.pauseScreen();
     return choice;
   }
 
