@@ -34,30 +34,21 @@ public class ConsoleUtils {
     System.out.print("\033[H\033[2J");
   }
 
-  public static void center(String msg) {
-    int consoleWidth = getConsoleWidth();
-    int msgWidth = msg.length();
-    int start = (int)Math.floor((consoleWidth / 2) - (msgWidth / 2));
-    for (int i = 0; i < start; i++) {
-      System.out.print(" ");
-    }
-    System.out.print(msg);
-    for (int i = start + msgWidth; i < consoleWidth; i++) {
-      System.out.print(" ");
-    }
+  public static String center(String msg) {
+    Integer msgLength = msg.length();
+    return center(msg, msgLength);
   }
 
-  public static void center(String msg, Integer length) {
+  public static String center(String msg, Integer length) {
     int consoleWidth = getConsoleWidth();
     int msgWidth = length;
+    String output = "";
     int start = (int)Math.floor((consoleWidth / 2) - (msgWidth / 2));
     for (int i = 0; i < start; i++) {
-      System.out.print(" ");
+      output += " ";
     }
-    System.out.print(msg);
-    for (int i = start + msgWidth; i < consoleWidth; i++) {
-      System.out.print(" ");
-    }
+    output += msg;
+    return output;
   }
 
   public static void setTitle(String title) {
