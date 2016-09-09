@@ -24,7 +24,16 @@ public class App {
 
   private static String getRunAgain() {
     DecimalFormat formatter = new DecimalFormat("#,###.00");
-    String msg = String.format("The total cost for your event is: " + ConsoleUtils.bold("$%s\n"), formatter.format(event.getTotalEventCost()));
+    int tableWidth = 35;
+    String totalCost = formatter.format(event.getTotalEventCost());
+    String baseCostPerPerson = formatter.format(5.00);
+    String mealCostPerPerson = formatter.format(event.getMealCostPerPerson());
+    String msg = String.format("The total cost for your event is: " + ConsoleUtils.bold("$%s\n"), totalCost);
+    msg += "See below for more information.\n\n";
+    msg += ConsoleUtils.underline(ConsoleUtils.makeTableLine("Item", "Cost", tableWidth));
+    msg += ConsoleUtils.makeTableLine("Base cost per person:", "$" + baseCostPerPerson, tableWidth);
+    msg += ConsoleUtils.makeTableLine("Meal cost per person:", "$" + mealCostPerPerson, tableWidth);
+    msg += "\n";
     msg += "Would you like to plan another event?\n";
     String prompt = "[Y/n] ";
     String errorMsg = "Please enter Y or N.";
@@ -121,8 +130,6 @@ public class App {
     }
     return output;
   }
-
-
 
   private static void setScreen() {
     ConsoleUtils.clearConsole();

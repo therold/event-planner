@@ -144,4 +144,15 @@ public class ConsoleUtils {
     return height;
   }
 
+  public static String makeTableLine(String leftText, String rightText, Integer tableWidth) {
+    String output = "";
+    output += leftText;
+    for (int i = 0; i < tableWidth - (leftText.length() + rightText.length()); i++) {
+      output += " ";
+    }
+    output += String.format("%s\n", rightText);
+    return output;
+  }
+
+
 }
