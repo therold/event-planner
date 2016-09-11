@@ -1,6 +1,7 @@
 import java.text.DecimalFormat;
 import java.io.Console;
 import java.util.Arrays;
+import java.util.Random;
 
 public class App {
   private static Event event;
@@ -12,14 +13,24 @@ public class App {
     moneyFormat  = new DecimalFormat("$#,##0.00");
     boolean running = true;
     while (running) {
-      String testing = Arrays.toString(Meal.getAllMealNames());
-      event.setNumberOfAttendees(getAttendees());
-      boolean mealChoiceRunning = true;
-      while (mealChoiceRunning) {
-        event.addMealById(getMealChoice());
-        String keepAddingMeals = getHaveEnoughMeals();
-        if (keepAddingMeals.equals("N") || keepAddingMeals.equals("n")) {
-          mealChoiceRunning = false;
+      String eventType = getEventRandom();
+      boolean isEventRandom = false;
+      if (eventType.equals("R") || eventType.equals("r")) {
+        isEventRandom = true;
+      }
+      if (isEventRandom) {
+        Random random = new Random();
+        event.setNumberOfAttendees(random.nextInt(Integer.SIZE - 1));
+        event.addMealById(random.nextInt(Meal.getAllMealNames().length - 1));
+      } else {
+        event.setNumberOfAttendees(getAttendees());
+        boolean mealChoiceRunning = true;
+        while (mealChoiceRunning) {
+          event.addMealById(getMealChoice());
+          String keepAddingMeals = getHaveEnoughMeals();
+          if (keepAddingMeals.equals("N") || keepAddingMeals.equals("n")) {
+            mealChoiceRunning = false;
+          }
         }
       }
       String keepRunning = getRunAgain();
@@ -29,6 +40,16 @@ public class App {
         event = new Event();
       }
     }
+  }
+
+  private static String getEventRandom() {
+    String msg = "Welcome to " + ConsoleUtils.bold("Epicodus Event Planners!\n");
+    msg += "You can choose from the following commands:\n[P]lan a new event\n[r]andom event.\n\n";
+    msg += "What would you like to do?";
+    String prompt = "[P/r]";
+    String errorMsg = "Please enter S or R.";
+    String[] validChoices = { "S", "s", "R", "r", "" };
+    return getChoice(msg, prompt, errorMsg, validChoices);
   }
 
   private static String getRunAgain() {
