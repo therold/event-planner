@@ -47,8 +47,8 @@ public class App {
     msg += "You can choose from the following commands:\n[P]lan a new event\n[r]andom event.\n\n";
     msg += "What would you like to do?";
     String prompt = "[P/r]";
-    String errorMsg = "Please enter S or R.";
-    String[] validChoices = { "S", "s", "R", "r", "" };
+    String errorMsg = "Please enter P or R.";
+    String[] validChoices = { "P", "p", "R", "r", "" };
     return getChoice(msg, prompt, errorMsg, validChoices);
   }
 
